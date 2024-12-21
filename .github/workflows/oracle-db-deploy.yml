@@ -9,18 +9,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      oracle:
-        image: gvenzl/oracle-free:latest
-        options: --publish 1521:1521  # Expose Oracle DB port
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Oracle DB and run commands
+    - name: Start Oracle DB Container
       run: |
-        # Wait for the database to be ready
-        sleep 70  # Adjust as needed to allow DB startup time
-        # Example: Run SQL command inside the container
+        docker run -d --name vendb \
+          -e ORACLE_RANDOM_PASSWORD=true \
+          -e APP_USER=my_user \
+          -e APP_USER_PASSWORD=password_i_should_change \
+          -p 1521:1521 \
+          gvenzl/oracle-free:latest
+
+    - name: Wait for Oracle DB to be Ready
+      run: |
+        # Wait for the database to be fully initialized
+        sleep 70
+
+    - name: Run SQL Command on Oracle DB
+      run: |
+        # Execute SQL command inside the container
         docker exec -it vendb bash -c "echo 'SELECT * FROM dual;' | sqlplus -S / as sysdba"
+
+    - name: Clean Up
+      if: always()
+      run: |
+        # Stop and remove the container
+        docker stop vendb
+        docker rm vendb
