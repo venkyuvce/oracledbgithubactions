@@ -1,61 +1,24 @@
-name: Deploy Oracle Database
+name: Run Oracle Database
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allows manual trigger
 
 jobs:
-  deploy-oracle:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the repository
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Step 2: Set up Docker
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
 
-    # Step 3: Pull Oracle Docker Image
-    - name: Pull Oracle Image
-      run: docker pull gvenzl/oracle-free:latest
-
-    # Step 4: Start Oracle Database Container
-    - name: Start Oracle Container
-      run: |
-        docker run -d \
-          --name oracle-db \
+      - name: Run Oracle Database
+        run: |
+          docker run -d --name oracle-db \
+          -e ORACLE_PWD=YourPassword \
           -p 1521:1521 \
-          -e ORACLE_PASSWORD=your_password \
-          -e APP_USER=your_app_user \
-          -e APP_USER_PASSWORD=your_app_password \
-          gvenzl/oracle-free:latest
-
-
-    # Step 5: Wait for Oracle Database to Initialize
-    - name: Wait for Oracle to be Ready
-      run: sleep 60
-
-    # Step 6: Initialize Database
-    - name: Initialize Database with SQL
-      run: |
-        docker exec -i oracle-db bash -c "echo 'Running SQL Initialization Script...'"
-        docker exec -i oracle-db sqlplus sys/your_password@localhost:1521/XEPDB1 as sysdba @my-init.sql
-
-    # Step 7: Verify Oracle Database is Running
-    - name: Check Oracle Database Logs
-      run: docker logs oracle-db
-
-    - name: Start ngrok
-      run: |
-        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc |sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-        echo "deb https://ngrok-agent.s3.amazonaws.com buster main" |sudo tee /etc/apt/sources.list.d/ngrok.list >/dev/null
-        sudo apt update && apt install ngrok
-        sudo ngrok authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
-        sudo nohup ngrok tcp 1521 &
-    
-    - name: Get ngrok Public URL
-      run: curl -s http://localhost:4040/api/tunnels | jq '.tunnels[0].public_url'      
+          oracle/database:latest
