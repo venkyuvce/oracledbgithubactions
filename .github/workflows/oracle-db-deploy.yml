@@ -21,6 +21,6 @@ jobs:
     - name: Set up Oracle DB and run commands
       run: |
         # Wait for the database to be ready
-        sleep 30  # Adjust as needed to allow DB startup time
+        sleep 70  # Adjust as needed to allow DB startup time
         # Example: Run SQL command inside the container
         docker exec -it vendb bash -c "echo 'SELECT * FROM dual;' | sqlplus -S / as sysdba"
