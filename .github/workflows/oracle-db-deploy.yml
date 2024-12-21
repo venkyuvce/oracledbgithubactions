@@ -30,7 +30,7 @@ jobs:
     - name: Run SQL Command on Oracle DB
       run: |
         # Execute SQL command inside the container
-        docker exec -it vendb bash -c "echo 'SELECT * FROM dual;' | sqlplus -S / as sysdba"
+        # docker exec -it vendb bash -c "echo 'SELECT * FROM dual;' | sqlplus -S / as sysdba"
 
     - name: Clean Up
       if: always()
