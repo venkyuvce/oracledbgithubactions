@@ -58,4 +58,4 @@ jobs:
         nohup ngrok tcp 1521 &
     
     - name: Get ngrok Public URL
-       run: curl -s http://localhost:4040/api/tunnels | jq '.tunnels[0].public_url'      
+      run: curl -s http://localhost:4040/api/tunnels | jq '.tunnels[0].public_url'      
