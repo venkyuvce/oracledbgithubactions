@@ -1,0 +1,36 @@
+name: Oracle Database Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      oracle:
+        image: gvenzl/oracle-xe:21-slim
+        env:
+          ORACLE_PASSWORD: oracle123
+          ORACLE_DATABASE: XEPDB1
+        ports:
+          - 1521:1521
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Verify Oracle connection
+        run: |
+          sleep 30  # Give Oracle some time to start up
+          sqlplus -L sys/oracle123@//localhost:1521/XEPDB1 as sysdba <<EOF
+          SELECT 1 FROM DUAL;
+          EXIT;
+          EOF
