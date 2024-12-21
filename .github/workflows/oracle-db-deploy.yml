@@ -21,6 +21,6 @@ jobs:
           docker run -d --name vendb \
           -e ORACLE_RANDOM_PASSWORD:true \
           -e APP_USER:my_user \
-          -e APP_USER_PASSWORD: password_i_should_change \
+          -e APP_USER_PASSWORD:password_i_should_change \
           -p 1521:1521 \
           gvenzl/oracle-free
