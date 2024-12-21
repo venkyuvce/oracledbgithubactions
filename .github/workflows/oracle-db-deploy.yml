@@ -18,9 +18,9 @@ jobs:
 
       - name: Run Oracle Database
         run: |
-          docker run -d --name vendb \
-          -e ORACLE_RANDOM_PASSWORD:true \
-          -e APP_USER:my_user \
-          -e APP_USER_PASSWORD:password_i_should_change \
-          -p 1521:1521 \
-          gvenzl/oracle-free
+          docker run -d --name vendb\
+          -e ORACLE_RANDOM_PASSWORD:true\
+          -e APP_USER:my_user\
+          -e APP_USER_PASSWORD:password123\
+          -p 1521:1521\
+          gvenzl/oracle-free:latest
