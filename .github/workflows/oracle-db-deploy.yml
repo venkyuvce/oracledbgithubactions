@@ -31,10 +31,3 @@ jobs:
       run: |
         # Execute SQL command inside the container
         # docker exec -it vendb bash -c "echo 'SELECT * FROM dual;' | sqlplus -S / as sysdba"
-
-    - name: Clean Up
-      if: always()
-      run: |
-        # Stop and remove the container
-        docker stop vendb
-        docker rm vendb
